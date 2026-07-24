@@ -1,23 +1,66 @@
 import { useContext } from "react";
 import { CartContext } from "../context/CartContext";
 import { FaTrash, FaPlus, FaMinus } from "react-icons/fa";
-
+import { useNavigate } from "react-router-dom";
+import API from "../api/axios";
 
 const Cart = () => {
 
 
   const {
-    cartItems,
-    removeFromCart,
-    updateQuantity,
-    totalPrice
-  } = useContext(CartContext);
+  cartItems,
+  removeFromCart,
+  updateQuantity,
+  totalPrice,
+  clearCart
+} = useContext(CartContext);
 
+const navigate = useNavigate();
 
+const handlePlaceOrder = async () => {
+  try {
+
+    const token = localStorage.getItem("token");
+
+    const items = cartItems.map(item => ({
+      product: item._id,
+      quantity: item.quantity,
+      price: item.price
+    }));
+
+    await API.post(
+      "/orders",
+      {
+        items,
+        totalAmount: totalPrice
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    alert("Order Placed Successfully 🎉");
+
+    clearCart();
+
+    navigate("/my-orders");
+
+  } catch (error) {
+
+    console.log(error);
+
+    alert(
+      error.response?.data?.message || "Order Failed"
+    );
+
+  }
+};
 
 
   if(cartItems.length === 0){
-
+    
     return (
 
       <div className="
@@ -152,13 +195,6 @@ const Cart = () => {
 
 
               </div>
-
-
-
-
-
-
-
               {/* QUANTITY */}
 
               <div className="
@@ -166,26 +202,18 @@ const Cart = () => {
               items-center
               gap-4
               ">
-
-
                 <button
 
                 onClick={()=>updateQuantity(item._id,"dec")}
-
                 className="
                 border
                 p-2
                 rounded-lg
                 "
-
                 >
-
                   <FaMinus/>
 
                 </button>
-
-
-
                 <span className="
                 font-bold
                 ">
@@ -193,12 +221,7 @@ const Cart = () => {
                   {item.quantity}
 
                 </span>
-
-
-
-
                 <button
-
                 onClick={()=>updateQuantity(item._id,"inc")}
 
                 className="
@@ -206,25 +229,11 @@ const Cart = () => {
                 p-2
                 rounded-lg
                 "
-
                 >
-
                   <FaPlus/>
-
                 </button>
-
-
-
               </div>
-
-
-
-
-
-
-
               {/* REMOVE */}
-
 
               <button
 
@@ -262,55 +271,45 @@ const Cart = () => {
 
 
         {/* TOTAL */}
+<div className="
+mt-6
+bg-white
+rounded-2xl
+shadow
+p-6
+">
 
+  <div className="flex justify-between items-center">
 
-        <div className="
-        mt-6
-        bg-white
-        rounded-2xl
-        shadow
-        p-6
-        flex
-        justify-between
-        items-center
-        ">
+    <h2 className="text-xl font-bold">
+      Total:
+    </h2>
 
+    <h2 className="text-3xl font-bold">
+      ₹{totalPrice.toLocaleString()}
+    </h2>
 
-          <h2 className="
-          text-xl
-          font-bold
-          ">
+  </div>
 
-            Total:
+  <button
+    onClick={handlePlaceOrder}
+    className="
+    w-full
+    mt-6
+    bg-green-600
+    text-white
+    py-3
+    rounded-xl
+    hover:bg-green-700
+    font-semibold
+    "
+  >
+    Place Order
+  </button>
 
-          </h2>
-
-
-
-          <h2 className="
-          text-3xl
-          font-bold
-          ">
-
-            ₹{totalPrice.toLocaleString()}
-
-          </h2>
-
-
-
+</div>
         </div>
-
-
-
-
       </div>
-
-
-    </div>
-
   )
-
 }
-
-
 export default Cart;
