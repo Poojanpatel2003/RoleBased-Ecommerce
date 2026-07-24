@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import AdminDashboard from "./pages/AdminDashboard";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Navbar from "./components/Navbar";
@@ -9,6 +9,8 @@ import AddProduct from "./pages/AddProduct";
 import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
+import AdminOrders from "./pages/AdminOrders";
+import AdminProducts from "./pages/AdminProducts";
 import MyOrders from "./pages/MyOrders";
 const App = () => {
 
@@ -57,6 +59,26 @@ element={<Wishlist/>}
       <MyOrders />
     </ProtectedRoute>
   }
+/>
+<Route
+  path="/admin/dashboard"
+  element={
+    <ProtectedRoute roles={["admin"]}>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+<Route
+ path="/admin/orders"
+ element={
+  <ProtectedRoute roles={["admin"]}>
+    <AdminOrders/>
+  </ProtectedRoute>
+ }
+/>
+<Route 
+path="/admin/products"
+element={<AdminProducts/>}
 />
       </Routes>
 

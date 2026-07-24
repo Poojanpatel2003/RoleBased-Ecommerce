@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 const AddProduct = () => {
 
 
-  const [form, setForm] = useState({
+  const [form,setForm] = useState({
 
     name:"",
     description:"",
@@ -17,10 +17,11 @@ const AddProduct = () => {
   });
 
 
-  const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [image,setImage] = useState(null);
 
-  const [loading, setLoading] = useState(false);
+  const [preview,setPreview] = useState(null);
+
+  const [loading,setLoading] = useState(false);
 
 
   const navigate = useNavigate();
@@ -29,19 +30,24 @@ const AddProduct = () => {
 
   const handleChange = (e)=>{
 
+
     setForm({
 
       ...form,
 
-      [e.target.name]: e.target.value
+      [e.target.name]:e.target.value
 
     });
+
 
   };
 
 
 
+
+
   const handleImageChange = (e)=>{
+
 
     const file = e.target.files[0];
 
@@ -50,17 +56,25 @@ const AddProduct = () => {
 
       setImage(file);
 
-      setPreview(URL.createObjectURL(file));
+      setPreview(
+        URL.createObjectURL(file)
+      );
 
     }
+
 
   };
 
 
 
+
+
+
   const handleSubmit = async(e)=>{
 
+
     e.preventDefault();
+
 
 
     if(!image){
@@ -72,58 +86,134 @@ const AddProduct = () => {
     }
 
 
+
+
+
     try{
 
 
       setLoading(true);
 
 
+
       const data = new FormData();
 
 
+
       data.append("name",form.name);
-      data.append("description",form.description);
-      data.append("price",form.price);
-      data.append("category",form.category);
-      data.append("stock",form.stock);
-      data.append("image",image);
 
+      data.append(
+        "description",
+        form.description
+      );
 
+      data.append(
+        "price",
+        form.price
+      );
 
-      await API.post(
-        "/products",
-        data,
-        {
-          headers:{
-            "Content-Type":"multipart/form-data"
-          }
-        }
+      data.append(
+        "category",
+        form.category
+      );
+
+      data.append(
+        "stock",
+        form.stock
+      );
+
+      data.append(
+        "image",
+        image
       );
 
 
 
-      alert("Product Added Successfully");
 
 
-      navigate("/");
+      const token = localStorage.getItem("token");
 
 
 
-    }catch(error){
+      await API.post(
+
+        "/products",
+
+        data,
+
+        {
+
+          headers:{
+
+            Authorization:
+            `Bearer ${token}`,
+
+            "Content-Type":
+            "multipart/form-data"
+
+          }
+
+        }
+
+      );
+
+
+
+
+
+      alert(
+        "Product Added Successfully 🎉"
+      );
+
+
+
+
+      setForm({
+
+        name:"",
+        description:"",
+        price:"",
+        category:"",
+        stock:""
+
+      });
+
+
+      setImage(null);
+
+      setPreview(null);
+
+
+
+      navigate("/admin/products");
+
+
+
+
+
+    }
+    catch(error){
 
 
       console.log(error);
 
 
+
       alert(
+
         error.response?.data?.message ||
+
         "Something went wrong"
+
       );
 
 
-    }finally{
+    }
+    finally{
+
 
       setLoading(false);
+
 
     }
 
@@ -133,303 +223,335 @@ const AddProduct = () => {
 
 
 
-  return (
 
-    <div
-    className="
-    min-h-screen
-    bg-gray-100
-    flex
-    justify-center
-    items-center
-    p-6
-    "
-    >
 
 
 
-      <form
+return (
 
-      onSubmit={handleSubmit}
+<div
+className="
+min-h-screen
+bg-gray-100
+flex
+justify-center
+items-center
+p-6
+"
+>
 
-      className="
-      bg-white
-      w-full
-      max-w-xl
-      rounded-3xl
-      shadow-xl
-      p-8
-      "
 
-      >
+<form
 
+onSubmit={handleSubmit}
 
+className="
+bg-white
+w-full
+max-w-xl
+rounded-3xl
+shadow-xl
+p-8
+"
 
-        <h1
-        className="
-        text-3xl
-        font-bold
-        text-center
-        mb-8
-        "
-        >
+>
 
-          Add New Product
 
-        </h1>
+<h1
+className="
+text-3xl
+font-bold
+text-center
+mb-8
+"
+>
 
+Add New Product
 
+</h1>
 
 
-        <div className="space-y-4">
 
 
+<div className="space-y-4">
 
-          <input
 
-          name="name"
 
-          value={form.name}
 
-          onChange={handleChange}
 
-          placeholder="Product Name"
+<input
 
-          className="
-          w-full
-          border
-          rounded-xl
-          px-4
-          py-3
-          focus:outline-none
-          focus:ring-2
-          focus:ring-blue-500
-          "
+name="name"
 
-          />
+value={form.name}
 
+onChange={handleChange}
 
+placeholder="Product Name"
 
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-blue-500
+"
 
-          <input
+/>
 
-          name="category"
 
-          value={form.category}
 
-          onChange={handleChange}
 
-          placeholder="Category"
 
-          className="
-          w-full
-          border
-          rounded-xl
-          px-4
-          py-3
-          focus:outline-none
-          focus:ring-2
-          focus:ring-blue-500
-          "
+<input
 
-          />
+name="category"
 
+value={form.category}
 
+onChange={handleChange}
 
+placeholder="Category"
 
-          <div className="grid grid-cols-2 gap-4">
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+focus:outline-none
+focus:ring-2
+focus:ring-blue-500
+"
 
+/>
 
-            <input
 
-            name="price"
 
-            type="number"
 
-            value={form.price}
 
-            onChange={handleChange}
 
-            placeholder="Price"
 
-            className="
-            border
-            rounded-xl
-            px-4
-            py-3
-            "
+<div className="
+grid
+grid-cols-2
+gap-4
+">
 
-            />
 
+<input
 
+name="price"
 
-            <input
+type="number"
 
-            name="stock"
+value={form.price}
 
-            type="number"
+onChange={handleChange}
 
-            value={form.stock}
+placeholder="Price"
 
-            onChange={handleChange}
+className="
+border
+rounded-xl
+px-4
+py-3
+"
 
-            placeholder="Stock"
+/>
 
-            className="
-            border
-            rounded-xl
-            px-4
-            py-3
-            "
 
-            />
 
 
-          </div>
+<input
 
+name="stock"
 
+type="number"
 
+value={form.stock}
 
+onChange={handleChange}
 
-          <textarea
+placeholder="Stock"
 
+className="
+border
+rounded-xl
+px-4
+py-3
+"
 
-          name="description"
+/>
 
-          value={form.description}
 
-          onChange={handleChange}
+</div>
 
-          placeholder="Product Description"
 
-          rows="4"
 
-          className="
-          w-full
-          border
-          rounded-xl
-          px-4
-          py-3
-          "
 
-          />
 
 
 
+<textarea
 
+name="description"
 
+value={form.description}
 
-          <div>
+onChange={handleChange}
 
+placeholder="Product Description"
 
-            <label
-            className="
-            block
-            font-medium
-            mb-2
-            "
-            >
+rows="4"
 
-              Product Image
+className="
+w-full
+border
+rounded-xl
+px-4
+py-3
+"
 
-            </label>
+/>
 
 
 
-            <input
 
-            type="file"
 
-            accept="image/*"
 
-            onChange={handleImageChange}
 
-            />
+<div>
 
 
+<label
+className="
+block
+font-medium
+mb-2
+"
+>
 
-          </div>
+Product Image
 
+</label>
 
 
 
+<input
 
+type="file"
 
-          {
-            preview &&
+accept="image/*"
 
-            <div className="mt-4">
+onChange={handleImageChange}
 
-              <p className="font-medium mb-2">
-                Preview
-              </p>
+/>
 
 
-              <img
+</div>
 
-              src={preview}
 
-              alt="preview"
 
-              className="
-              w-full
-              h-56
-              object-cover
-              rounded-xl
-              "
 
-              />
 
-            </div>
 
-          }
 
+{
+preview &&
 
+<div className="mt-4">
 
 
+<p className="font-medium mb-2">
 
+Preview
 
-          <button
+</p>
 
-          disabled={loading}
 
-          className="
-          w-full
-          bg-blue-600
-          text-white
-          py-3
-          rounded-xl
-          font-semibold
-          hover:bg-blue-700
-          disabled:bg-gray-400
-          "
 
-          >
+<img
 
-            {
-              loading
-              ?
-              "Adding Product..."
-              :
-              "Add Product"
-            }
+src={preview}
 
+alt="preview"
 
-          </button>
+className="
+w-full
+h-56
+object-cover
+rounded-xl
+"
 
+/>
 
 
-        </div>
+</div>
 
+}
 
 
-      </form>
 
 
 
-    </div>
 
-  )
+
+
+
+<button
+
+disabled={loading}
+
+className="
+w-full
+bg-blue-600
+text-white
+py-3
+rounded-xl
+font-semibold
+hover:bg-blue-700
+disabled:bg-gray-400
+"
+
+>
+
+{
+
+loading
+
+?
+
+"Adding Product..."
+
+:
+
+"Add Product"
+
+}
+
+
+</button>
+
+
+
+
+
+</div>
+
+
+
+</form>
+
+
+
+</div>
+
+)
+
 
 }
 

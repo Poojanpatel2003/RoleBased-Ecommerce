@@ -9,6 +9,7 @@ import {useContext} from "react";
 import {AuthContext} from "../context/AuthContext";
 import { CartContext } from "../context/CartContext";
 import { WishlistContext } from "../context/WishlistContext";
+
 const Navbar = () => {
     const {user,logout}=useContext(AuthContext);
     const { cartItems } = useContext(CartContext);
@@ -78,32 +79,44 @@ const { wishlistItems } = useContext(WishlistContext);
             Home
           </Link>
 
+{
+user?.role === "admin" &&
 
+<>
 
-         {
-  user &&
-  (user.role === "admin" || user.role === "sales") &&
+<Link
+to="/admin/dashboard"
+className="
+px-4
+py-2
+rounded-xl
+bg-indigo-600
+text-white
+hover:bg-indigo-700
+transition
+"
+>
+Dashboard
+</Link>
+<Link to="/admin/products">
+Products
+</Link>
+<Link
+to="/admin/orders"
+className="
+px-4
+py-2
+rounded-xl
+bg-green-600
+text-white
+hover:bg-green-700
+transition
+"
+>
+Manage Orders
+</Link>
 
-  <Link
-  to="/add-product"
-  className="
-  flex
-  items-center
-  gap-2
-  bg-blue-600
-  text-white
-  px-4
-  py-2
-  rounded-xl
-  hover:bg-blue-700
-  "
-  >
-
-    <FaPlus/>
-
-    Add Product
-
-  </Link>
+</>
 
 }
 
@@ -123,8 +136,8 @@ const { wishlistItems } = useContext(WishlistContext);
             <span
 className="
 absolute
--top-3
--right-3
+-top-2
+-right-2
 bg-red-500
 text-white
 text-xs
