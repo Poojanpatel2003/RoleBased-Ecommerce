@@ -10,6 +10,7 @@ import ProductDetails from "./pages/ProductDetails";
 import Cart from "./pages/Cart";
 import Wishlist from "./pages/Wishlist";
 import AdminOrders from "./pages/AdminOrders";
+import EditProduct from "./pages/EditProduct";
 import AdminProducts from "./pages/AdminProducts";
 import MyOrders from "./pages/MyOrders";
 const App = () => {
@@ -79,6 +80,10 @@ element={<Wishlist/>}
 <Route 
 path="/admin/products"
 element={<AdminProducts/>}
+/>
+<Route
+  path="/admin/products/edit/:id"
+  element={<EditProduct />}
 />
       </Routes>
 
